@@ -150,7 +150,6 @@ class Game:
                 return True
         return False
 
-
     def is_win(self, ships, field):
         count = 0
         count_hit = 0
@@ -163,6 +162,7 @@ class Game:
         if count == count_hit:
             return True
         return False
+
     def start_game(self):
         self.computer_ship_inp()
         self.player_ships_inp()
