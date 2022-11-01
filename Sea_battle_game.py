@@ -87,10 +87,23 @@ class Game:
         for ship in self.players_ships:
             if ship.get_x == ship.get_x1:
                 for i in range(ship.get_y, ship.get_y1 + 1):
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 000012814f99ff20708b765718fc923409cd09a3
                     self.player_field[ship.get_x][i] = "|\033[34m ■\033[0m"
             elif ship.get_y == ship.get_y1:
                 for i in range(ship.get_x, ship.get_x1 + 1):
                     self.player_field[i][ship.get_y] = "|\033[34m ■\033[0m"
+<<<<<<< HEAD
+=======
+=======
+                    self.player_field[ship.get_x][i] = "|\033[34m S\033[0m"
+            elif ship.get_y == ship.get_y1:
+                for i in range(ship.get_x, ship.get_x1 + 1):
+                    self.player_field[i][ship.get_y] = "|\033[34m S\033[0m"
+>>>>>>> 02d338436d193e3748dd7317b917fae4c11218b0
+>>>>>>> 000012814f99ff20708b765718fc923409cd09a3
 
     def game_field(self):
         print("             You                             Computer")
