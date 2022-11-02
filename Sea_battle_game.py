@@ -128,6 +128,8 @@ class Game:
                                                  ["| O", "| O", "| O", "| O", "| O", "| O"],
                                                  ["| O", "| O", "| O", "| O", "| O", "| O"],
                                                  ["| O", "| O", "| O", "| O", "| O", "| O"]]
+                            os.system("cls")
+                            self.game_field()
                             return self.ships_create("player")
             except ValueError:
                 print("Введены неверные координаты.")
