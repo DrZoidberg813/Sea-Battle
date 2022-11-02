@@ -20,12 +20,50 @@ class Game:
                                ["| O", "| O", "| O", "| O", "| O", "| O"]]
 
     @staticmethod
+    def is_win(ships, field):
+        count = 0
+        count_hit = 0
+        for ship in ships:
+            for n in range(ship.get_x, ship.get_x1 + 1):
+                for k in range(ship.get_y, ship.get_y1 + 1):
+                    if field[n][k] == "| \033[31mX\033[0m":
+                        count_hit += 1
+                    count += 1
+        if count == count_hit:
+            return True
+        return False
+
+    @staticmethod
     def IS_SHIP_NOT_WHERE(ship, x, y, x1, y1):
         for i in range(ship.get_x - 1, ship.get_x1 + 2):
             for k in range(ship.get_y - 1, ship.get_y1 + 2):
                 if (i == x and k == y) or (i == x1 and k == y1):
                     return False
         return True
+
+    @staticmethod
+    def IS_HIT(ships, x, y):
+        for ship in ships:
+            for n in range(ship.get_x, ship.get_x1 + 1):
+                for k in range(ship.get_y, ship.get_y1 + 1):
+                    if n == x and k == y:
+                        return True
+        return False
+
+    @staticmethod
+    def ship_terminate(ship, field):
+        count_hit = 0
+        count = 0
+        for n in range(ship.get_x, ship.get_x1 + 1):
+            for k in range(ship.get_y, ship.get_y1 + 1):
+                if field[n][k] == "| \033[31mX\033[0m":
+                    count_hit += 1
+                count += 1
+        if count_hit == count:
+            for n in range(ship.get_x - 1, ship.get_x1 + 2):
+                for k in range(ship.get_y - 1, ship.get_y1 + 2):
+                    if n in range(6) and k in range(6) and field[n][k] != "| \033[31mX\033[0m":
+                        field[n][k] = "| \033[35mT\033[0m"
 
     def ship_input(self, ships, x, y, x1, y1, what_ship):
         if all([x in range(1, 7), y in range(1, 7),
@@ -43,19 +81,24 @@ class Game:
         while True:
             try:
                 if count == 0 and name == "player":
-                    x, y, x1, y1 = map(int, input("Введите координаты для корабля на 3 клетки (x,y)(x,y): ").split())
+                    x, y, x1, y1 = map(int, input("Введите координаты для корабля на 3 клетки,"
+                                                  " из начальной координаты x,y через пробел"
+                                                  " и конечной координаты x,y через пробел): ").split())
                     ship = 2
                 elif count == 0 and name == "computer":
                     x, y, x1, y1 = [random.randint(1, 6) for i in range(4)]
                     ship = 2
                 elif 0 < count < 3 and name == "player":
-                    x, y, x1, y1 = map(int, input("Введите координаты для корабля на 2 клетки (x,y)(x,y): ").split())
+                    x, y, x1, y1 = map(int, input("Введите координаты для корабля на 2 клетки,"
+                                                  " из начальной координаты x,y через пробел"
+                                                  " и конечной координаты x,y через пробел): ").split())
                     ship = 1
                 elif 0 < count < 3 and name == "computer":
                     x, y, x1, y1 = [random.randint(1, 6) for i in range(4)]
                     ship = 1
                 elif 2 < count < 7 and name == "player":
-                    x, y = map(int, input("Введите координаты для корабля на 1 клетку (x,y): ").split())
+                    x, y = map(int, input("Введите координаты для корабля на 1 клетку,"
+                                          " в виде x,y через пробел: ").split())
                     x1, y1 = x, y
                     ship = 0
                 elif 2 < count < 7 and name == "computer":
@@ -98,57 +141,19 @@ class Game:
         for i, j in enumerate(self.player_field):
             print(i + 1, *j, "     ", i + 1, *self.computer_field[i])
 
-    @staticmethod
-    def IS_HIT(ships, x, y):
-        for ship in ships:
-            for n in range(ship.get_x, ship.get_x1 + 1):
-                for k in range(ship.get_y, ship.get_y1 + 1):
-                    if n == x and k == y:
-                        return True
-        return False
-
-    @staticmethod
-    def ship_terminate(ship, field):
-        count_hit = 0
-        count = 0
-        for n in range(ship.get_x, ship.get_x1 + 1):
-            for k in range(ship.get_y, ship.get_y1 + 1):
-                if field[n][k] == "| \033[31mX\033[0m":
-                    count_hit += 1
-                count += 1
-        if count_hit == count:
-            for n in range(ship.get_x - 1, ship.get_x1 + 2):
-                for k in range(ship.get_y - 1, ship.get_y1 + 2):
-                    if n in range(6) and k in range(6) and field[n][k] != "| \033[31mX\033[0m":
-                        field[n][k] = "| \033[30mT\033[0m"
-
     def is_shoot(self, ships, field, x, y):
         try:
-            if not field[x][y] in ["| \033[31mX\033[0m", "| \033[30mT\033[0m"]:
+            if not field[x][y] in ["| \033[31mX\033[0m", "| \033[35mT\033[0m"]:
                 if self.IS_HIT(ships, x, y):
                     field[x][y] = "| \033[31mX\033[0m"
                     return True
                 else:
-                    field[x][y] = "| \033[30mT\033[0m"
+                    field[x][y] = "| \033[35mT\033[0m"
                     return False
             else:
                 return None
         except IndexError:
             print("Введены неверные координаты.")
-
-    @staticmethod
-    def is_win(ships, field):
-        count = 0
-        count_hit = 0
-        for ship in ships:
-            for n in range(ship.get_x, ship.get_x1 + 1):
-                for k in range(ship.get_y, ship.get_y1 + 1):
-                    if field[n][k] == "| \033[31mX\033[0m":
-                        count_hit += 1
-                    count += 1
-        if count == count_hit:
-            return True
-        return False
 
     def start_game(self):
         os.system("cls")
@@ -159,7 +164,7 @@ class Game:
         while True:
             try:
                 if count % 2 == 0:
-                    shoot_x, shoot_y = map(int, input("Введите координаты выстрела (x,y): ").split())
+                    shoot_x, shoot_y = map(int, input("Введите координаты выстрела x,y через пробел: ").split())
                     shoot = self.is_shoot(self.computer_ships, self.computer_field, shoot_x - 1, shoot_y - 1)
                     if shoot is not None and not shoot:
                         count += 1
