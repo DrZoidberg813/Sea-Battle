@@ -20,7 +20,7 @@ class Game:
                                ["| O", "| O", "| O", "| O", "| O", "| O"]]
 
     @staticmethod
-    def is_win(ships, field):
+    def IS_WIN(ships, field):
         count = 0
         count_hit = 0
         for ship in ships:
@@ -51,7 +51,7 @@ class Game:
         return False
 
     @staticmethod
-    def ship_terminate(ship, field):
+    def SHIP_TERMINATE(ship, field):
         count_hit = 0
         count = 0
         for n in range(ship.get_x, ship.get_x1 + 1):
@@ -66,9 +66,11 @@ class Game:
                         field[n][k] = "| \033[35mT\033[0m"
 
     def ship_input(self, ships, x, y, x1, y1, what_ship):
-        if all([x in range(1, 7), y in range(1, 7),
-                ((abs(x - x1) == what_ship and y == y1) or (abs(y - y1) == what_ship and x == x1)), x <= x1 and y <= y1,
-                all([self.IS_SHIP_NOT_WHERE(i, x - 1, y - 1, x1 - 1, y1 - 1) for i in ships])]):
+        if all([
+            x in range(1, 7), y in range(1, 7),
+            ((abs(x - x1) == what_ship and y == y1) or (abs(y - y1) == what_ship and x == x1)), x <= x1 and y <= y1,
+            all([self.IS_SHIP_NOT_WHERE(i, x - 1, y - 1, x1 - 1, y1 - 1) for i in ships])
+        ]):
             ships.append(Ship(x - 1, y - 1, x1 - 1, y1 - 1))
             return True
         else:
@@ -116,6 +118,17 @@ class Game:
                         self.game_field()
                     else:
                         print("Введены неверные координаты.")
+                        if input(
+                                "Если хотите сбросить набор кораблей введите restart, если нет нажмите Enter: "
+                        ) == "restart":
+                            self.players_ships.clear()
+                            self.player_field = [["| O", "| O", "| O", "| O", "| O", "| O"],
+                                                 ["| O", "| O", "| O", "| O", "| O", "| O"],
+                                                 ["| O", "| O", "| O", "| O", "| O", "| O"],
+                                                 ["| O", "| O", "| O", "| O", "| O", "| O"],
+                                                 ["| O", "| O", "| O", "| O", "| O", "| O"],
+                                                 ["| O", "| O", "| O", "| O", "| O", "| O"]]
+                            return self.ships_create("player")
             except ValueError:
                 print("Введены неверные координаты.")
             finally:
@@ -182,18 +195,18 @@ class Game:
                 print("Введены неверные координаты.")
             finally:
                 for ship in self.computer_ships:
-                    self.ship_terminate(ship, self.computer_field)
+                    self.SHIP_TERMINATE(ship, self.computer_field)
 
                 for ship in self.players_ships:
-                    self.ship_terminate(ship, self.player_field)
+                    self.SHIP_TERMINATE(ship, self.player_field)
 
                 self.game_field()
 
-                if self.is_win(self.players_ships, self.player_field):
+                if self.IS_WIN(self.players_ships, self.player_field):
                     print("Компьютер победил!")
                     break
 
-                if self.is_win(self.computer_ships, self.computer_field):
+                if self.IS_WIN(self.computer_ships, self.computer_field):
                     print("Игрок победил!")
                     break
 
@@ -226,8 +239,9 @@ class Ship:
 
 
 def main():
-    test = Game()
-    test.start_game()
+    if input("Начать игру (y/n)? ") == "y":
+        test = Game()
+        test.start_game()
 
 
 if __name__ == '__main__':
